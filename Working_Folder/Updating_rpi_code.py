@@ -1,27 +1,19 @@
-from pydub import AudioSegment
-from pydub.playback import play
-from picamera import PiCamera
-from PIL import Image
-from gtts import gTTS
-from time import sleep
+import cv2
+import numpy as np
 import pytesseract
-import wave
 
-camera = PiCamera()
+pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 
-camera.start_preview()
-sleep(5)
-camera.capture('basic.jpg')
-camera.stop_preview()
+img = cv2.imread("book_page-1309x1536.jpg")
+img = cv2.resize(img, None, fx=0.5, fy=0.5)
+gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
-im = Image.open("basic.jpg")
+adaptive_threshold = cv2.adaptiveThreshold(gray, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 55, 11)
 
-text = pytesseract.image_to_string(im, lang = 'eng')
-
+text = pytesseract.image_to_string(adaptive_threshold)
 print(text)
 
-tts = gTTS(text)
-tts.save('basic.wav')
-
-sound = AudioSegment.from_mp3('basic.wav')
-play(sound)
+# cv2.imshow('Img', img)
+# cv2.imshow('Gray', gray)
+cv2.imshow('adaptive threshold', adaptive_threshold)
+cv2.waitKey(0)
