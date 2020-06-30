@@ -27,7 +27,13 @@ p = Translator()
 k = p.translate(result, dest='hindi')
 print(k)
 engine = pyttsx3.init()
+voices = engine.getProperty('voices')
+#engine.setProperty('voice', voices[0].id) # For Male
+engine.setProperty('voice', voices[1].id) # For Female
+#engine.setProperty("language",'hi') - not working
 
 # an audio will be played which speaks the test if pyttsx3 recognizes it
+engine.save_to_file(k,'test.mp3')
 engine.say(result)
+#engine.say(k) - for speaking translated o/p
 engine.runAndWait()
